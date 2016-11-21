@@ -6,6 +6,7 @@
 package cs2016b.word.search.GUI.Controller;
 
 import cs2016b.word.search.BLL.WordManager;
+import cs2016b.word.search.BLL.strategies.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -89,11 +90,31 @@ public class MainViewController implements Initializable
     @FXML
     private void searchClick(ActionEvent event)
     {
+        CompareStrategy compStrategy = 
+                getSelectedStrategy();
+        
         ObservableList<String> filteredList =
                 FXCollections.observableArrayList(
-                    wordManager.filterWords(textQuery.getText()));
+                    wordManager.filterWords(compStrategy));
         
         listWords.setItems(filteredList);
+    }
+    
+    private CompareStrategy getSelectedStrategy()
+    {
+        boolean isCaseSensitive = chkCaseSensitive.isSelected();
+        String query = textQuery.getText();
+        
+        if (rbBegins.isSelected())
+            return new BeginsWith(query, isCaseSensitive);
+        else if (rbContains.isSelected())
+            return new Contains(query, isCaseSensitive);
+        else if (rbEnds.isSelected())
+            return new EndsWith(query, isCaseSensitive);
+        else if (rbExact.isSelected())
+            return new Exact(query, isCaseSensitive); 
+        
+        return null;
     }
 
     @FXML

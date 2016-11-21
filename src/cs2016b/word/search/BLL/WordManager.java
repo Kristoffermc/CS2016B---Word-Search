@@ -5,6 +5,7 @@
  */
 package cs2016b.word.search.BLL;
 
+import cs2016b.word.search.BLL.strategies.CompareStrategy;
 import cs2016b.word.search.DAL.WordFileHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +19,14 @@ public class WordManager
     private WordFileHandler fileHandler =
             new WordFileHandler();
     
-    public List<String> filterWords(String query)
+    public List<String> filterWords(CompareStrategy strategy)
     {
         List<String> filteredList = new ArrayList();
         List<String> words = fileHandler.getAllWords();
         
         for (String word : words)
         {
-            if(word.startsWith(query))
+            if(strategy.compare(word))
             {
                 filteredList.add(word);
             }
