@@ -11,7 +11,6 @@ package cs2016b.word.search.BLL.strategies;
  */
 public class Exact extends AbstractCompareStrategy
 {
-
     public Exact(String query, boolean isCaseSensitive)
     {
         super(query, isCaseSensitive);

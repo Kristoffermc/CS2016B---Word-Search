@@ -7,7 +7,9 @@ package cs2016b.word.search.GUI.Controller;
 
 import cs2016b.word.search.BLL.WordManager;
 import cs2016b.word.search.BLL.strategies.*;
+import cs2016b.word.search.GUI.Model.WordModel;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,15 +49,13 @@ public class MainViewController implements Initializable
     @FXML
     private ComboBox<String> comboLimit;
     
-    private ObservableList<String> allWords =
-                FXCollections.observableArrayList();
-    
     private WordManager wordManager = new WordManager();
+    private WordModel wordModel = new WordModel();
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        loadAllWordsFromFile();
+        loadModelAndBind();
         setToggleGroupForRadioButtons();
         fillComboBox();
     }    
@@ -69,14 +69,6 @@ public class MainViewController implements Initializable
         comboLimit.getSelectionModel().selectFirst();
     }
     
-    private void loadAllWordsFromFile()
-    {
-        allWords = FXCollections.observableArrayList(
-                wordManager.getAllWords());
-        
-        listWords.setItems(allWords);
-    }
-    
     private void setToggleGroupForRadioButtons()
     {
         ToggleGroup toggleGroup = new ToggleGroup();
@@ -85,6 +77,19 @@ public class MainViewController implements Initializable
         rbEnds.setToggleGroup(toggleGroup);
         rbExact.setToggleGroup(toggleGroup);
         rbBegins.setSelected(true);
+    }
+    
+    private void loadModelAndBind()
+    {
+        // Load the words into the model
+        wordModel.setWords(wordManager.getAllWords());
+        
+        // Bind the labels text to the wordmodel
+        lblCount.textProperty().bind(
+                wordModel.getCount().asString());
+        
+        // Bind the model to the listview
+        listWords.setItems(wordModel.getWordList());
     }
     
     @FXML
@@ -97,7 +102,7 @@ public class MainViewController implements Initializable
                 FXCollections.observableArrayList(
                     wordManager.filterWords(compStrategy));
         
-        listWords.setItems(filteredList);
+        wordModel.setWords(filteredList);
     }
     
     private CompareStrategy getSelectedStrategy()
@@ -121,7 +126,8 @@ public class MainViewController implements Initializable
     private void clearClick(ActionEvent event)
     {
         textQuery.clear();
-        loadAllWordsFromFile();
+        List<String> allWords = wordManager.getAllWords();
+        wordModel.setWords(allWords);
     }
 
     @FXML
