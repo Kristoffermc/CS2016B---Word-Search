@@ -5,6 +5,7 @@
  */
 package cs2016b.word.search.DAL;
 
+import cs2016b.word.search.WordSearchException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class WordFileHandler
 {
-    public List<String> getAllWords()
+    public List<String> getAllWords() throws WordSearchException
     {
         List<String> allWords = new ArrayList();
         
@@ -38,8 +39,8 @@ public class WordFileHandler
         }
         catch (IOException ex)
         {
-            Logger.getLogger(WordFileHandler.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            throw new WordSearchException();
+            //return null;
         }
         return allWords;
     }

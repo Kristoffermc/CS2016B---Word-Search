@@ -8,6 +8,7 @@ package cs2016b.word.search.GUI.Controller;
 import cs2016b.word.search.BLL.WordManager;
 import cs2016b.word.search.BLL.strategies.*;
 import cs2016b.word.search.GUI.Model.WordModel;
+import cs2016b.word.search.WordSearchException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -82,8 +83,15 @@ public class MainViewController implements Initializable
     private void loadModelAndBind()
     {
         // Load the words into the model
+        try
+        {
         wordModel.setWords(wordManager.getAllWords());
-        
+        }
+        catch(WordSearchException wse)
+        {
+            // present user with problem
+            
+        }
         // Bind the labels text to the wordmodel
         lblCount.textProperty().bind(
                 wordModel.getCount().asString());
@@ -93,16 +101,23 @@ public class MainViewController implements Initializable
     }
     
     @FXML
-    private void searchClick(ActionEvent event)
+    private void searchClick(ActionEvent event) 
     {
         CompareStrategy compStrategy = 
                 getSelectedStrategy();
-        
+        try
+        {
         ObservableList<String> filteredList =
                 FXCollections.observableArrayList(
                     wordManager.filterWords(compStrategy));
         
+        
         wordModel.setWords(filteredList);
+        }
+        catch(WordSearchException wse)
+        {
+            // do something with exception
+        }
     }
     
     private CompareStrategy getSelectedStrategy()
@@ -123,7 +138,7 @@ public class MainViewController implements Initializable
     }
 
     @FXML
-    private void clearClick(ActionEvent event)
+    private void clearClick(ActionEvent event) throws WordSearchException
     {
         textQuery.clear();
         List<String> allWords = wordManager.getAllWords();
